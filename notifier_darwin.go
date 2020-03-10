@@ -5,7 +5,7 @@ package notifier
 
 /*
 #cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework Cocoa -sectcreate __TEXT __info_plist Info.plist
+#cgo LDFLAGS: -framework Cocoa -Wl,-sectcreate,__TEXT,__info_plist,Info.plist
 #import <Cocoa/Cocoa.h>
 extern CFStringRef deliverNotification(CFStringRef title, CFStringRef subtitle, CFStringRef message, CFStringRef appIconURLString, CFArrayRef actions, CFStringRef groupID, CFStringRef bundleID, NSTimeInterval timeout, bool debug);
 */
