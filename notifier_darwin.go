@@ -54,8 +54,8 @@ func (n darwinNotifier) DeliverNotification(notification Notification) error {
 	actionsRef := StringsToCFArray(notification.Actions)
 	defer Release(C.CFTypeRef(actionsRef))
 
-	C.deliverNotification(titleRef, nil, messageRef, appIconURLStringRef, actionsRef,
-		bundleIDRef, nil, C.NSTimeInterval(notification.Timeout), false)
+	C.deliverNotification(titleRef, 0, messageRef, appIconURLStringRef, actionsRef,
+		bundleIDRef, 0, C.NSTimeInterval(notification.Timeout), false)
 
 	return nil
 }
