@@ -5,7 +5,7 @@ package notifier
 
 /*
 #cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework Cocoa -sectcreate __TEXT __info_plist Info.plist
+#cgo LDFLAGS: -framework Cocoa -Wl,-sectcreate,__TEXT,__info_plist,Info.plist
 #import <Cocoa/Cocoa.h>
 extern CFStringRef deliverNotification(CFStringRef title, CFStringRef subtitle, CFStringRef message, CFStringRef appIconURLString, CFArrayRef actions, CFStringRef groupID, CFStringRef bundleID, NSTimeInterval timeout, bool debug);
 */
@@ -54,8 +54,8 @@ func (n darwinNotifier) DeliverNotification(notification Notification) error {
 	actionsRef := StringsToCFArray(notification.Actions)
 	defer Release(C.CFTypeRef(actionsRef))
 
-	C.deliverNotification(titleRef, nil, messageRef, appIconURLStringRef, actionsRef,
-		bundleIDRef, nil, C.NSTimeInterval(notification.Timeout), false)
+	C.deliverNotification(titleRef, 0, messageRef, appIconURLStringRef, actionsRef,
+		bundleIDRef, 0, C.NSTimeInterval(notification.Timeout), false)
 
 	return nil
 }
