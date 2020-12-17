@@ -4,13 +4,11 @@
 package notifier
 
 /*
-#cgo CFLAGS: -x objective-c
-#cgo LDFLAGS: -framework Cocoa -Wl,-sectcreate,__TEXT,__info_plist,Info.plist
-#import <Cocoa/Cocoa.h>
-extern CFStringRef deliverNotification(CFStringRef title, CFStringRef subtitle, CFStringRef message, CFStringRef appIconURLString, CFArrayRef actions, CFStringRef groupID, CFStringRef bundleID, NSTimeInterval timeout, bool debug);
+#cgo LDFLAGS: -framework Foundation
+#include "notifier_darwin.h"
+extern void sendNotification(char *title, char *subtitle, char *message, char *imagePath);
 */
 import "C"
-import "fmt"
 
 type darwinNotifier struct{}
 
@@ -21,41 +19,12 @@ func NewNotifier() (Notifier, error) {
 
 // DeliverNotification sends a notification
 func (n darwinNotifier) DeliverNotification(notification Notification) error {
-	titleRef, err := StringToCFString(notification.Title)
-	if err != nil {
-		return err
-	}
-	defer Release(C.CFTypeRef(titleRef))
-	messageRef, err := StringToCFString(notification.Message)
-	if err != nil {
-		return err
-	}
-	defer Release(C.CFTypeRef(messageRef))
-
-	var bundleIDRef C.CFStringRef
-	if notification.BundleID != "" {
-		bundleIDRef, err = StringToCFString(notification.BundleID)
-		if err != nil {
-			return err
-		}
-		defer Release(C.CFTypeRef(bundleIDRef))
-	}
-
-	var appIconURLStringRef C.CFStringRef
-	if notification.ImagePath != "" {
-		appIconURLString := fmt.Sprintf("file://%s", notification.ImagePath)
-		appIconURLStringRef, err = StringToCFString(appIconURLString)
-		if err != nil {
-			return err
-		}
-		defer Release(C.CFTypeRef(appIconURLStringRef))
-	}
-
-	actionsRef := StringsToCFArray(notification.Actions)
-	defer Release(C.CFTypeRef(actionsRef))
-
-	C.deliverNotification(titleRef, 0, messageRef, appIconURLStringRef, actionsRef,
-		bundleIDRef, 0, C.NSTimeInterval(notification.Timeout), false)
+	C.sendNotification(
+		C.CString(notification.Title),
+		nil,
+		C.CString(notification.Message),
+		nil,
+	)
 
 	return nil
 }

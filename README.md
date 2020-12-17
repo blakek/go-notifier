@@ -1,60 +1,31 @@
-## go-notifier
+# go-notifier
 
 Cross platform system notifications in go (golang).
 
-### Platforms
+## Platforms
 
-For OS X, we use NSUserNotificationCenter APIs from cgo. This only supports OS X 10.9 and above.
+For macOS, this uses `NSUserNotificationCenter` APIs from cgo. This only supports macOS 10.9 and above.
 
-For Windows, we use [toaster](https://github.com/nels-o/toaster). This only supports Windows 8 and above.
+For Windows, this uses [toaster](https://github.com/nels-o/toaster). This only supports Windows 8 and above.
 
-For Linux, we use [notify-send](http://man.cx/notify-send).
+For Linux, this uses [notify-send](http://man.cx/notify-send).
 
-### Install
+## Install
 
 ```sh
-go install github.com/keybase/go-notifier/notifier
+go install github.com/blakek/go-notifier
 ```
 
-### Alerts
+## Changes from `keybase/go-notifier`
 
-If you need alert style (actionable) notifications (on OS X), you need to include an Info.plist
-in the binary and sign it. You can look at `build_darwin.sh` on how to do this.
+This removes some functionality, but also doesn't have some of the issues.
 
-### Examples (OS X)
+**Fixes:**
 
-#### Notification with single action
+- fixes an issue where clicking the notification would exit your Go command
+- removes printing to stdout that couldn't be captured
+- removes the need for a timeout on macOS. Note, make sure to not exit before the notification shows (or it won't show!)
 
-```
-notifier --title="Hi" --message="Test message" --bundle-id=keybase.Electron --timeout=20 --action=Close
-```
+**Lacking features:**
 
-If action is chosen, you get output (stdout):
-```
-{"type":"action","action":"Close"}
-```
-
-If the notification contents are clicked,
-```
-{"type":"clicked"}
-```
-
-#### Notification with multiple actions
-
-```
-notifier --title="Hi" --message="Test message" --bundle-id=keybase.Electron --timeout=20 --action=Close --action="Install" --action="Ignore"
-```
-
-
-### Resources
-
-Follows similar requirements of [node-notifier](https://github.com/mikaelbr/node-notifier),
-but only supports recent platform versions.
-
-Instead of [deckarep/gosx-notifier](https://github.com/deckarep/gosx-notifier), which uses an embedded version of [terminal-notifier](https://github.com/julienXX/terminal-notifier),
-this implementation uses cgo to talk directly to NSUserNotificationCenter APIs. It is also possible to use AppleScript APIs to generate notifications (see [this post](https://apple.stackexchange.com/questions/57412/how-can-i-trigger-a-notification-center-notification-from-an-applescript-or-shel/115373#115373)),
-but a cgo implementation was preferable.
-
-The [0xAX/notificator](https://github.com/0xAX/notificator) only supports growlnotify on Windows and OS X.
-
-The [vjeantet/alerter](https://github.com/vjeantet/alerter) app allows you to use alert style notifications on OS X.
+- removes functionality for action buttons, an image, and a custom icon (shows the Terminal icon)
